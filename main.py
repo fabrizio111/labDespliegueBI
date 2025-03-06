@@ -22,16 +22,20 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 @app.post("/predict")
 def make_predictions(dataModel: DataModel):
-    df = pd.DataFrame([dataModel.dict()])
+    df = pd.DataFrame([dataModel.model_dump()])
     df.columns = dataModel.columns()
+
+    #print("Columnas esperadas por el modelo:", model.feature_names_in_)
+    #print("Columnas del DataFrame recibido:", df.columns.tolist())
+
     result = model.predict(df)
     return {"prediction": result.tolist()}
 
 
-
+"""
 @app.post("/predict")
 async def make_predictions(request: Request):
     data = await request.json()
     print("Datos recibidos:", data)  # Para ver si los datos llegan bien
     return {"message": "Datos recibidos"}
-
+"""
