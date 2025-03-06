@@ -3,6 +3,7 @@ from typing import Optional
 import joblib
 from DataModel import DataModel
 from fastapi import FastAPI
+from fastapi import Request
 
 app = FastAPI()
 
@@ -21,7 +22,16 @@ def read_item(item_id: int, q: Optional[str] = None):
 
 @app.post("/predict")
 def make_predictions(dataModel: DataModel):
-    df = pd.DataFrame(dataModel.dict())
+    df = pd.DataFrame([dataModel.dict()])
     df.columns = dataModel.columns()
     result = model.predict(df)
     return {"prediction": result.tolist()}
+
+
+
+@app.post("/predict")
+async def make_predictions(request: Request):
+    data = await request.json()
+    print("Datos recibidos:", data)  # Para ver si los datos llegan bien
+    return {"message": "Datos recibidos"}
+
